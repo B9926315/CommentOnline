@@ -98,6 +98,7 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Vou
                 voucherId.toString(), userId.toString()
         );
         //判断结果是否为零
+        assert result != null;
         int r = result.intValue();
         if (r!=0) {
             //不为零，无购买资格
@@ -116,43 +117,7 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Vou
         return Result.ok(orderId);
 
     }
-    /*@Override
-    public Result seckillVoucher(Long voucherId) {
-        //查询优惠券,他们是共享ID的，所以可以通用
-        SeckillVoucher voucher = seckillVoucherService.getById(voucherId);
-        //判断秒杀是否开始
-        if (voucher.getBeginTime().isAfter(LocalDateTime.now())) {
-            //秒杀尚未开始
-            return Result.fail("秒杀尚未开始!");
-        }
-        //判断秒杀是否结束
-        if (voucher.getEndTime().isBefore(LocalDateTime.now())) {
-            //秒杀已经结束
-            return Result.fail("秒杀已经结束!");
-        }
-        //判断库存是否充足
-        if (voucher.getStock()<1) {
-            return Result.fail("秒杀券已售罄！");
-        }
-        //加锁
-        Long userId = UserHolder.getUser().getId();
-        //创建锁对象
-        //SimpleRedisLock lock=new SimpleRedisLock("order:"+userId,stringRedisTemplate);
-        RLock lock = redissonClient.getLock("lock:order:" + userId);
-        boolean isLock = lock.tryLock();
-        if (!isLock) {
-            //获取失败，返回错误信息
-            return Result.fail("每人只能下一单！");
-        }
-        try {
-            //为防止事务失效，获取事务代理对象（事务）
-            IVoucherOrderService proxy = (IVoucherOrderService) AopContext.currentProxy();
-            return proxy.createVoucherOrder(voucherId);
-        } finally {
-            lock.unlock();
-        }
 
-    }*/
     @Transactional
     public void createVoucherOrder(VoucherOrder voucherOrder) {
         //一人一单
