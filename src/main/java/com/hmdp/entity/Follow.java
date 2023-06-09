@@ -19,7 +19,9 @@ import java.time.LocalDateTime;
  * @Date 2023-05-22
  */
 @Data
+//不要调用父类的equals和hashcode方法来生成子类的equals和hashcode方法。callSuper=false表示不调用父类的方法
 @EqualsAndHashCode(callSuper = false)
+//Accessors允许链式调用和设置对象属性
 @Accessors(chain = true)
 @TableName("tb_follow")
 public class Follow implements Serializable {

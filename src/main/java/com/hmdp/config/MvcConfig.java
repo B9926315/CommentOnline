@@ -12,6 +12,7 @@ import javax.annotation.Resource;
 /**
  * @Author Planck
  * @Date 2023-01-13 - 21:57
+ * 拦截器
  */
 @Configuration
 public class MvcConfig implements WebMvcConfigurer {

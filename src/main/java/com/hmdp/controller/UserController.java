@@ -2,7 +2,6 @@ package com.hmdp.controller;
 
 
 import com.hmdp.dto.*;
-import com.hmdp.entity.UserInfo;
 import com.hmdp.service.IUserInfoService;
 import com.hmdp.service.IUserService;
 import com.hmdp.utils.UserHolder;
@@ -24,10 +23,8 @@ import javax.servlet.http.HttpSession;
 @RestController
 @RequestMapping("/user")
 public class UserController {
-
     @Resource
     private IUserService userService;
-
     @Resource
     private IUserInfoService userInfoService;
 
@@ -51,15 +48,17 @@ public class UserController {
     }
 
     /**
-     * 登出功能
+     * 退出登录
      * @return 无
      */
-    @PostMapping("/logout")
-    public Result logout(){
-        // TODO 实现登出功能
-        return Result.fail("功能未完成");
+    @PostMapping("/logout/{token}")
+    public Result logout(@PathVariable String token){
+        return userService.logout(token);
     }
 
+    /**
+     * 获取当前登录用户信息并返回
+     */
     @GetMapping("/me")
     public Result me(){
         // 获取当前登录的用户并返回
@@ -69,15 +68,32 @@ public class UserController {
 
     @GetMapping("/info/{id}")
     public Result info(@PathVariable("id") Long userId){
-        // 查询详情
-        UserInfo info = userInfoService.getById(userId);
-        if (info == null) {
-            // 没有详情，应该是第一次查看详情
-            return Result.ok();
-        }
-        info.setCreateTime(null);
-        info.setUpdateTime(null);
-        // 返回
-        return Result.ok(info);
+        return userInfoService.info(userId);
+    }
+
+    /**
+     * 根据ID查询用户
+     * @param userId 用户ID
+     */
+    @GetMapping("/{id}")
+    public Result queryUserById(@PathVariable("id") Long userId){
+        return userService.queryUserById(userId);
+    }
+
+    /**
+     * 为当前登录用户签到
+     */
+    @PostMapping("/sign")
+    public Result userSign(){
+        return userService.sign();
+    }
+
+    /**
+     * 统计当前登录用户连续签到次数
+     * @return 天数
+     */
+    @GetMapping("/sign/count")
+    public Result userSignCount(){
+        return userService.signCount();
     }
 }
